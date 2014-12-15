@@ -155,7 +155,13 @@ func main() {
 	if len(*sslcrt) == 0 {
 		panic(http.ListenAndServe(*port, nil))
 	} else {
-		panic(http.ListenAndServeTLS(*port, *sslcrt, *sslkey, nil))
+    server := &http.Server{
+        Addr: ":80",
+        TLSConfig: &tls.Config{
+            ClientAuth: tls.RequireAndVerifyClientCert,
+        },
+    }
+		panic(server.ListenAndServeTLS(*port, *sslcrt, *sslkey, nil))
 	}
 }
 
